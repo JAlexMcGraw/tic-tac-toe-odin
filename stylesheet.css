@@ -1,0 +1,15 @@
+.grid-container {
+    display: grid;
+    gap: 5px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* .border {
+    background-color: black;
+} */
+
+.cell {
+    background-color: #ccc;
+    padding: 10px;
+    height: 10rem;
+}

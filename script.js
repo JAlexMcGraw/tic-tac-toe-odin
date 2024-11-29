@@ -52,6 +52,7 @@ function Cell() {
 function gameController(playerOneName = "Player One", playerTwoName = "Player Two") {
     const board = Gameboard();
     const boardData = board.getBoard();
+    const flattenedBoardArray = boardData.flat(2);
     let winner;
     let gameOver = winner === undefined ? false: true;
 
@@ -101,6 +102,22 @@ function gameController(playerOneName = "Player One", playerTwoName = "Player Tw
 
     const getActivePlayer = () => activePlayer;
 
+    const displayBoard = () => {
+        flattenedValues = flattenedBoardArray.map((cell) => cell.getValue());
+        for (cellVal in flattenedValues) {
+            cell = document.getElementById(`cell${cellVal}`);
+            cellValue = flattenedBoardArray[cellVal].getValue()
+            console.log(`flattened cell: ${cellValue}`);
+            if ((cellValue === 1) && (cell.innerHTML === "")) {
+                console.log(`placing X`);
+                cell.innerHTML += "X";
+            } else if ((cellValue === 2) & (cell.innerHTML === "")) {
+                console.log(`placing O`);
+                cell.innerHTML += "O";
+            }
+        }
+    }
+
     const printNewRound = () => {
         board.printBoard();
 
@@ -132,8 +149,7 @@ function gameController(playerOneName = "Player One", playerTwoName = "Player Tw
     const checkIfTied = () => {
         const noneEqualZero = (arr) => arr.every(v => v !== 0)
         
-        flattenedArray = boardData.flat(2);
-        flattenedValues = flattenedArray.map((cell) => cell.getValue());
+        flattenedValues = flattenedBoardArray.map((cell) => cell.getValue());
         console.log(`flattened array: ${flattenedValues}`)
         if (noneEqualZero(flattenedValues)) {
             console.log("No more spaces to play!")
@@ -156,16 +172,22 @@ function gameController(playerOneName = "Player One", playerTwoName = "Player Tw
         if (checkIfAvailable(row, col) === true) {
             console.log(`${getActivePlayer().name} placed at (${row}, ${col})`);
             board.placeMark(row, col, getActivePlayer());
+            displayBoard();
             checkIfWinner();
             checkIfTied();
-            switchPlayer();
-            printNewRound();
+            if (gameOver === false) {
+                switchPlayer();
+                printNewRound();
+            } else {
+                console.log("Game over!")
+            }
         } else {
             console.log(`Choose a different spot. (${row}, ${col}) is taken.`)
             console.log(`It is still ${getActivePlayer().name}'s turn`)
         }
         
     } 
+
     return {playRound, getActivePlayer}
 }
 
