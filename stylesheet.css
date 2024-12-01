@@ -1,5 +1,6 @@
 .grid-container {
     display: grid;
+    /* place-items: center; */
     gap: 5px;
     grid-template-columns: repeat(3, 1fr);
 }
@@ -8,8 +9,24 @@
     background-color: black;
 } */
 
+.player-turn {
+    font-size: 5rem;
+    background-color: white;
+    min-height: 4rem;
+}
+
 .cell {
     background-color: #ccc;
     padding: 10px;
     height: 10rem;
+    line-height: 10rem;
+    text-align: center;
+    align-items: center;
+    font-size: 4rem;
+    color: blue;
+}
+
+#player-turn {
+    text-align: center;
+    align-items: center;
 }

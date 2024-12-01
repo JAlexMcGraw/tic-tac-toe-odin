@@ -55,6 +55,7 @@ function gameController(playerOneName = "Player One", playerTwoName = "Player Tw
     const flattenedBoardArray = boardData.flat(2);
     let winner;
     let gameOver = winner === undefined ? false: true;
+    let playerTurnHeader = document.getElementById("player-turn");
 
     const player = [
         {
@@ -139,8 +140,9 @@ function gameController(playerOneName = "Player One", playerTwoName = "Player Tw
             secondVal = boardData[rowValues[1][0]][rowValues[1][1]].getValue()
             thirdVal = boardData[rowValues[2][0]][rowValues[2][1]].getValue()
             if (allEqual([firstVal, secondVal, thirdVal])) {
-                console.log(`${player.name} has won!`)
                 winner = player.name;
+                playerTurnHeader.innerHTML = `${winner} has won!`
+                console.log(`${winner} has won!`)
             }
         }
 
@@ -154,6 +156,7 @@ function gameController(playerOneName = "Player One", playerTwoName = "Player Tw
         if (noneEqualZero(flattenedValues)) {
             console.log("No more spaces to play!")
             winner = "Tied";
+            playerTurnHeader.innerHTML = winner;
         }
 
     }
