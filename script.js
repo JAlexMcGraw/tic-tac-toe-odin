@@ -13,15 +13,6 @@ function Gameboard() {
     const getBoard = () => boardData;
 
     const placeMark = (row, col, player) => {
-        // const isAvailable = boardData.filter((row) => row[col].getValue() === 0);
-        // const isAvailable = boardData[row][col].getValue() === 0;
-        // console.log(`isAvailable: ${isAvailable}`)
-        // // console.log(`isAvailable Length: ${isAvailable.length}`)
-        // if (isAvailable !== true) {
-        //     console.log("Spot taken");
-        //     return;
-        // }
-
         boardData[row][col].addToken(player.token);
         console.log(`boarddata info: ${boardData[row][col].getValue()}`)
     }
@@ -49,15 +40,37 @@ function Cell() {
 }
 
 
-function gameController(playerOneName = "Player One", playerTwoName = "Player Two") {
+function gameController() {
     const board = Gameboard();
+    let playerOneName;
+    let playerTwoName;
     const boardData = board.getBoard();
     const flattenedBoardArray = boardData.flat(2);
+    const flattenedValues = flattenedBoardArray.map((cell) => cell.getValue());
     let winner;
     let gameOver = winner === undefined ? false: true;
     let playerTurnHeader = document.getElementById("player-turn");
 
-    const player = [
+    const modal = document.getElementById("modal");
+    const startGameButton = document.getElementById("startGameButton");
+    const playerNameInputOne = document.getElementById("playerNameOne");
+    const playerNameInputTwo = document.getElementById("playerNameTwo");
+
+    window.onload = () => {
+        modal.style.display = 'flex';
+    }
+
+    startGameButton.addEventListener('click', () => {
+        console.log(`player one: ${playerNameInputOne.value.trim()}\nplayer two: ${playerNameInputTwo.value.trim()}`)
+        playerOneName = playerNameInputOne.value.trim();
+        playerTwoName = playerNameInputTwo.value.trim();
+        if ((playerOneName) && (playerTwoName)) {
+            updatePlayerNames(playerOneName, playerTwoName)
+            modal.style.display = 'none';
+        }
+    })
+
+    let player = [
         {
             name: playerOneName,
             token: 1
@@ -97,6 +110,11 @@ function gameController(playerOneName = "Player One", playerTwoName = "Player Tw
 
     let activePlayer = player[0];
 
+    function updatePlayerNames(name1, name2) {
+        player[0].name = name1;
+        player[1].name = name2;
+    }
+
     const switchPlayer = () => {
         activePlayer = activePlayer === player[0] ? player[1]: player[0];
     }
@@ -104,7 +122,6 @@ function gameController(playerOneName = "Player One", playerTwoName = "Player Tw
     const getActivePlayer = () => activePlayer;
 
     const displayBoard = () => {
-        flattenedValues = flattenedBoardArray.map((cell) => cell.getValue());
         for (cellVal in flattenedValues) {
             cell = document.getElementById(`cell${cellVal}`);
             cellValue = flattenedBoardArray[cellVal].getValue()
@@ -149,9 +166,11 @@ function gameController(playerOneName = "Player One", playerTwoName = "Player Tw
     }
 
     const checkIfTied = () => {
+        // This is in case that there is a winner in the last cell, it doesn't show tied
+        if (winner !== undefined) return;
+
         const noneEqualZero = (arr) => arr.every(v => v !== 0)
         
-        flattenedValues = flattenedBoardArray.map((cell) => cell.getValue());
         console.log(`flattened array: ${flattenedValues}`)
         if (noneEqualZero(flattenedValues)) {
             console.log("No more spaces to play!")
@@ -191,6 +210,18 @@ function gameController(playerOneName = "Player One", playerTwoName = "Player Tw
         
     } 
 
+    for (cellVal in flattenedValues) {
+        const div = document.getElementById(`cell${cellVal}`);
+        const location = div.classList[1]
+        const parts = location.replace(/[()]/g, '').split(',');
+        const numbers = parts.map(Number);
+
+        console.log(`location: ${numbers}`)
+        
+        div.addEventListener('click', function () {
+            playRound(numbers[0], numbers[1])
+        })
+    }
     return {playRound, getActivePlayer}
 }
 
